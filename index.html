@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>little something — Find a gift that feels like them</title>
+  <title>little something — Gift Finder</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,38 +16,45 @@
 
 <body>
 
-  <div class="background-shape shape-one"></div>
-  <div class="background-shape shape-two"></div>
+  <div class="blob blob-pink"></div>
+  <div class="blob blob-sage"></div>
 
   <header class="navbar">
-    <div class="logo">little something<span>.</span></div>
+
+    <a class="logo" href="#" id="logo">
+      little something<span>.</span>
+    </a>
 
     <button class="saved-button" id="savedButton">
-      Saved
-      <span id="savedCount">0</span>
+      Saved <span id="savedCount">0</span>
     </button>
+
   </header>
 
 
   <main>
 
     <!-- HOME -->
+
     <section class="screen active" id="homeScreen">
 
       <div class="hero">
 
-        <div class="hero-content">
+        <div class="hero-copy">
 
-          <p class="eyebrow">THE PERSONAL GIFT FINDER</p>
+          <p class="eyebrow">
+            THE PERSONAL GIFT FINDER
+          </p>
 
           <h1>
             Find a gift<br>
             that feels like them.
           </h1>
 
-          <p class="hero-text">
-            Tell us a little about the person you're shopping for.
-            We'll help you find something thoughtful, useful and very them.
+          <p class="hero-description">
+            A few thoughtful questions can turn
+            “I have no idea what to buy”
+            into something that actually feels right.
           </p>
 
           <button class="primary-button" id="startButton">
@@ -55,38 +62,44 @@
             <span>→</span>
           </button>
 
-          <p class="small-note">
-            A few thoughtful questions. No endless scrolling.
+          <p class="tiny-note">
+            Thoughtful ideas. Less scrolling.
           </p>
 
         </div>
 
 
-        <div class="hero-visual">
+        <div class="hero-art">
 
-          <div class="floating-card card-top">
-            thoughtful
+          <div class="floating-note note-one">
+            made for them
           </div>
 
-          <div class="main-art">
+          <div class="gift-scene">
 
-            <div class="art-circle"></div>
+            <div class="sun"></div>
 
-            <div class="art-box">
-              <div class="box-ribbon"></div>
-              <div class="box-lid"></div>
-              <div class="box-body"></div>
+            <div class="gift-box">
+
+              <div class="gift-lid"></div>
+
+              <div class="gift-body"></div>
+
+              <div class="ribbon vertical"></div>
+
+              <div class="ribbon horizontal"></div>
+
             </div>
 
-            <div class="art-text">
-              A little<br>
+            <div class="scene-copy">
+              little<br>
               something
             </div>
 
           </div>
 
-          <div class="floating-card card-bottom">
-            picked for them
+          <div class="floating-note note-two">
+            just right
           </div>
 
         </div>
@@ -97,58 +110,61 @@
 
 
     <!-- QUESTIONS -->
+
     <section class="screen" id="questionScreen">
 
-      <div class="question-wrapper">
+      <div class="question-container">
 
-        <div class="question-header">
+        <div class="top-row">
 
           <div>
-            <p class="eyebrow">LET'S FIND THE RIGHT THING</p>
-            <div class="progress-text" id="progressText">
-              Question 1
-            </div>
+            <p class="eyebrow">
+              LET'S FIND THE RIGHT THING
+            </p>
+
+            <p class="question-progress" id="questionProgress">
+              Question 1 of 5
+            </p>
           </div>
 
-          <button class="text-button" id="restartButton">
+          <button class="plain-button" id="restartButton">
             Start over
           </button>
 
         </div>
 
 
-        <div class="progress-line">
-          <div class="progress-fill" id="progressFill"></div>
+        <div class="progress-track">
+          <div class="progress-bar" id="progressBar"></div>
         </div>
 
 
         <div class="question-card">
 
-          <div class="question-number" id="questionNumber">
+          <p class="question-index" id="questionIndex">
             01
-          </div>
+          </p>
 
           <h2 id="questionText">
             Who are you shopping for?
           </h2>
 
-          <p id="questionSubtitle">
-            Don't overthink it. Just tell us what feels right.
+          <p class="question-help" id="questionHelp">
+            Tell us who they are to you.
           </p>
-
 
           <textarea
             id="answerInput"
-            placeholder="Type your answer here..."
+            placeholder="Type your answer..."
             maxlength="500"
           ></textarea>
 
 
-          <div class="question-footer">
+          <div class="answer-bottom">
 
-            <p>
+            <span>
               Press Enter to continue
-            </p>
+            </span>
 
             <button class="send-button" id="sendButton">
               →
@@ -160,10 +176,13 @@
 
 
         <div class="thinking" id="thinking">
+
           <span></span>
           <span></span>
           <span></span>
-          Thinking...
+
+          Finding the next question...
+
         </div>
 
       </div>
@@ -172,24 +191,31 @@
 
 
     <!-- RESULTS -->
+
     <section class="screen" id="resultsScreen">
 
-      <div class="results-wrapper">
+      <div class="results-container">
 
-        <div class="results-heading">
+        <div class="results-header">
 
           <div>
-            <p class="eyebrow">A LITTLE SOMETHING FOR THEM</p>
 
-            <h2>Something just right.</h2>
+            <p class="eyebrow">
+              A LITTLE SOMETHING FOR THEM
+            </p>
+
+            <h2>
+              Something just right.
+            </h2>
 
             <p id="resultsSummary">
-              A few ideas chosen around what you told us.
+              These ideas were chosen around what you told us.
             </p>
+
           </div>
 
           <button class="secondary-button" id="anotherButton">
-            Find another gift
+            Start again
           </button>
 
         </div>
@@ -203,15 +229,23 @@
 
 
     <!-- SAVED -->
+
     <section class="screen" id="savedScreen">
 
-      <div class="saved-wrapper">
+      <div class="saved-container">
 
-        <div class="saved-heading">
+        <div class="saved-header">
 
           <div>
-            <p class="eyebrow">YOUR LITTLE COLLECTION</p>
-            <h2>Saved gifts.</h2>
+
+            <p class="eyebrow">
+              YOUR COLLECTION
+            </p>
+
+            <h2>
+              Saved gifts.
+            </h2>
+
           </div>
 
           <button class="secondary-button" id="backButton">
@@ -220,10 +254,11 @@
 
         </div>
 
+
         <div class="gift-grid" id="savedGrid"></div>
 
         <p class="empty-state" id="emptyState">
-          You haven't saved any gifts yet.
+          Nothing saved yet.
         </p>
 
       </div>
@@ -233,9 +268,7 @@
   </main>
 
 
-  <div class="toast" id="toast">
-    Saved to your collection
-  </div>
+  <div class="toast" id="toast"></div>
 
 
   <script src="app.js"></script>
