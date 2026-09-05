@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>little something — Find a gift that feels like them</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="background-shape shape-one"></div>
+  <div class="background-shape shape-two"></div>
+
+  <header class="navbar">
+    <div class="logo">little something<span>.</span></div>
+
+    <button class="saved-button" id="savedButton">
+      Saved
+      <span id="savedCount">0</span>
+    </button>
+  </header>
+
+
+  <main>
+
+    <!-- HOME -->
+    <section class="screen active" id="homeScreen">
+
+      <div class="hero">
+
+        <div class="hero-content">
+
+          <p class="eyebrow">THE PERSONAL GIFT FINDER</p>
+
+          <h1>
+            Find a gift<br>
+            that feels like them.
+          </h1>
+
+          <p class="hero-text">
+            Tell us a little about the person you're shopping for.
+            We'll help you find something thoughtful, useful and very them.
+          </p>
+
+          <button class="primary-button" id="startButton">
+            Find their gift
+            <span>→</span>
+          </button>
+
+          <p class="small-note">
+            A few thoughtful questions. No endless scrolling.
+          </p>
+
+        </div>
+
+
+        <div class="hero-visual">
+
+          <div class="floating-card card-top">
+            thoughtful
+          </div>
+
+          <div class="main-art">
+
+            <div class="art-circle"></div>
+
+            <div class="art-box">
+              <div class="box-ribbon"></div>
+              <div class="box-lid"></div>
+              <div class="box-body"></div>
+            </div>
+
+            <div class="art-text">
+              A little<br>
+              something
+            </div>
+
+          </div>
+
+          <div class="floating-card card-bottom">
+            picked for them
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- QUESTIONS -->
+    <section class="screen" id="questionScreen">
+
+      <div class="question-wrapper">
+
+        <div class="question-header">
+
+          <div>
+            <p class="eyebrow">LET'S FIND THE RIGHT THING</p>
+            <div class="progress-text" id="progressText">
+              Question 1
+            </div>
+          </div>
+
+          <button class="text-button" id="restartButton">
+            Start over
+          </button>
+
+        </div>
+
+
+        <div class="progress-line">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+
+        <div class="question-card">
+
+          <div class="question-number" id="questionNumber">
+            01
+          </div>
+
+          <h2 id="questionText">
+            Who are you shopping for?
+          </h2>
+
+          <p id="questionSubtitle">
+            Don't overthink it. Just tell us what feels right.
+          </p>
+
+
+          <textarea
+            id="answerInput"
+            placeholder="Type your answer here..."
+            maxlength="500"
+          ></textarea>
+
+
+          <div class="question-footer">
+
+            <p>
+              Press Enter to continue
+            </p>
+
+            <button class="send-button" id="sendButton">
+              →
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="thinking" id="thinking">
+          <span></span>
+          <span></span>
+          <span></span>
+          Thinking...
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- RESULTS -->
+    <section class="screen" id="resultsScreen">
+
+      <div class="results-wrapper">
+
+        <div class="results-heading">
+
+          <div>
+            <p class="eyebrow">A LITTLE SOMETHING FOR THEM</p>
+
+            <h2>Something just right.</h2>
+
+            <p id="resultsSummary">
+              A few ideas chosen around what you told us.
+            </p>
+          </div>
+
+          <button class="secondary-button" id="anotherButton">
+            Find another gift
+          </button>
+
+        </div>
+
+
+        <div class="gift-grid" id="giftGrid"></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- SAVED -->
+    <section class="screen" id="savedScreen">
+
+      <div class="saved-wrapper">
+
+        <div class="saved-heading">
+
+          <div>
+            <p class="eyebrow">YOUR LITTLE COLLECTION</p>
+            <h2>Saved gifts.</h2>
+          </div>
+
+          <button class="secondary-button" id="backButton">
+            Back
+          </button>
+
+        </div>
+
+        <div class="gift-grid" id="savedGrid"></div>
+
+        <p class="empty-state" id="emptyState">
+          You haven't saved any gifts yet.
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <div class="toast" id="toast">
+    Saved to your collection
+  </div>
+
+
+  <script src="app.js"></script>
+
+</body>
+</html>
