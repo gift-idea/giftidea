@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/gift-finder.js": {
+      "maxDuration": 60
+    }
+  }
+}
