@@ -4,251 +4,180 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
+const ALLOWED_ORIGIN = "https://gift-idea.github.io";
 
 export default async function handler(req, res) {
+  // CORS
+  res.setHeader("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
 
   if (req.method !== "POST") {
-
     return res.status(405).json({
       error: "Method not allowed"
     });
-
   }
 
-
   try {
-
     const { answers = [] } = req.body || {};
 
-
-    if (!Array.isArray(answers)) {
-
+    if (!Array.isArray(answers) || answers.length === 0) {
       return res.status(400).json({
-        error: "Invalid answers"
+        error: "Please provide answers."
       });
-
     }
 
-
-    /*
-      STEP 1
-      Ask the text model for personalized gifts.
-    */
-
     const conversation = answers
-      .map(item =>
-        `${item.question}: ${item.answer}`
-      )
+      .map((item) => `${item.question}: ${item.answer}`)
       .join("\n");
 
+    // -----------------------------
+    // 1. AI chooses the gifts
+    // -----------------------------
 
-    const giftResponse =
-      await client.responses.create({
+    const response = await client.responses.create({
+      model: "gpt-5.6-luna",
+      input: `
+You are the AI gift finder for a beautiful website called "little something".
 
-        model: "gpt-5.6-luna",
+Based on the user's answers, recommend exactly 3 thoughtful gifts.
 
-        input: [
-          {
-            role: "system",
+User answers:
+${conversation}
 
-            content: `
-You are the gift assistant for a website called "little something".
+Rules:
+- Understand the recipient, personality, interests, budget and occasion.
+- Keep prices in USD.
+- Stay reasonably close to the user's budget.
+- Gifts should feel thoughtful, realistic and specific.
+- Do not recommend weapons.
+- Do not recommend drugs, alcohol or nicotine.
+- Do not recommend gambling or sexual products.
+- No emojis.
+- Return ONLY valid JSON.
 
-Your job is to recommend thoughtful, realistic gifts.
-
-Use the user's answers to understand:
-- who the recipient is
-- personality
-- interests
-- budget
-- occasion
-
-Return exactly 3 gift ideas.
-
-Important:
-- prices must be in USD
-- stay close to the user's budget
-- do not recommend dangerous or age-restricted products
-- do not recommend weapons, drugs, alcohol, nicotine, gambling, or sexual products
-- make the recommendations appropriate for a general audience
-- explain briefly why each gift fits
-- do not use emojis
-- return ONLY valid JSON
-
-JSON format:
+Use exactly this structure:
 
 {
-  "summary": "short summary",
+  "summary": "A short personalized sentence.",
   "gifts": [
     {
-      "name": "gift name",
-      "category": "category",
+      "name": "Gift name",
+      "category": "Gift category",
       "price": "$30",
-      "reason": "why this gift fits",
-      "image_prompt": "detailed prompt for a beautiful product photograph"
+      "reason": "Why this gift fits this person.",
+      "image_prompt": "Detailed description of the gift for an editorial product photo."
     }
   ]
 }
-            `
-          },
+`
+    });
 
-          {
-            role: "user",
+    let text = response.output_text?.trim();
 
-            content:
-              `Here are the user's answers:\n\n${conversation}`
-          }
-
-        ]
-
-      });
-
-
-    const text =
-      giftResponse.output_text;
-
-
-    let result;
-
-
-    try {
-
-      result = JSON.parse(text);
-
-    } catch {
-
-      return res.status(500).json({
-        error: "The AI returned invalid JSON."
-      });
-
+    if (!text) {
+      throw new Error("AI returned an empty response.");
     }
 
+    // Remove markdown fences if AI accidentally adds them
+    text = text
+      .replace(/^```json\s*/i, "")
+      .replace(/^```\s*/i, "")
+      .replace(/\s*```$/i, "")
+      .trim();
 
-    /*
-      STEP 2
-      Generate an individual image for each gift.
-    */
+    const result = JSON.parse(text);
 
-    const giftsWithImages = [];
+    if (!Array.isArray(result.gifts)) {
+      throw new Error("Invalid gift response.");
+    }
 
+    const gifts = result.gifts.slice(0, 3);
 
-    for (const gift of result.gifts.slice(0, 3)) {
+    // -----------------------------
+    // 2. AI generates gift images
+    // -----------------------------
 
-      try {
-
-        const imageResponse =
-          await client.images.generate({
-
+    const giftsWithImages = await Promise.all(
+      gifts.map(async (gift) => {
+        try {
+          const imageResponse = await client.images.generate({
             model: "gpt-image-2",
 
             prompt: `
-Create a beautiful editorial product photograph for a
-modern gift recommendation website.
+Create a realistic editorial product photograph for a
+premium modern gift recommendation website.
 
 Gift:
 ${gift.name}
 
-Visual direction:
+Category:
+${gift.category}
+
+Description:
 ${gift.image_prompt}
 
-Style:
-- cozy boutique photography
-- soft natural lighting
+Visual style:
+- elegant boutique photography
 - warm cream background
-- elegant composition
+- soft natural light
+- cozy and sophisticated
+- minimal composition
 - realistic product photography
-- tasteful
-- minimal
 - no people
+- no hands
 - no logos
 - no brand names
 - no text
 - no watermark
 
-The image should clearly show the gift itself.
+The gift itself should be the clear focus of the image.
 `,
-
             size: "1024x1024",
-
             quality: "low",
-
             background: "opaque",
-
             output_format: "jpeg",
-
             n: 1
-
           });
 
+          const base64 = imageResponse.data?.[0]?.b64_json;
 
-        const base64 =
-          imageResponse.data?.[0]?.b64_json;
-
-
-        if (base64) {
-
-          giftsWithImages.push({
-
+          return {
             ...gift,
+            image: base64
+              ? `data:image/jpeg;base64,${base64}`
+              : null
+          };
 
-            image:
-              `data:image/jpeg;base64,${base64}`
+        } catch (error) {
+          console.error("Image generation failed:", error);
 
-          });
-
-        } else {
-
-          giftsWithImages.push({
+          return {
             ...gift,
             image: null
-          });
-
+          };
         }
+      })
+    );
 
-      } catch (imageError) {
-
-        console.error(
-          "Image generation error:",
-          imageError
-        );
-
-
-        giftsWithImages.push({
-
-          ...gift,
-
-          image: null
-
-        });
-
-      }
-
-    }
-
+    // -----------------------------
+    // 3. Send everything to website
+    // -----------------------------
 
     return res.status(200).json({
-
-      summary:
-        result.summary || "",
-
-      gifts:
-        giftsWithImages
-
+      summary: result.summary || "",
+      gifts: giftsWithImages
     });
-
 
   } catch (error) {
-
-    console.error(error);
-
+    console.error("Gift finder error:", error);
 
     return res.status(500).json({
-
-      error:
-        "Something went wrong while finding your gifts."
-
+      error: "Something went wrong. Please try again."
     });
-
   }
-
 }
