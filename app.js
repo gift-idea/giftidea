@@ -80,3 +80,102 @@ async function createRecommendations() {
   }
 
 }
+function renderAIGifts(gifts) {
+
+  giftGrid.innerHTML = "";
+
+
+  gifts.forEach(gift => {
+
+    const card =
+      document.createElement("article");
+
+    card.className = "gift-card";
+
+
+    const alreadySaved =
+      savedGifts.some(
+        item => item.name === gift.name
+      );
+
+
+    const imageHTML = gift.image
+
+      ? `
+        <img
+          src="${gift.image}"
+          alt="${escapeHTML(gift.name)}"
+          loading="lazy"
+        >
+      `
+
+      : `
+        <div class="image-loading">
+          <span>Image unavailable</span>
+        </div>
+      `;
+
+
+    card.innerHTML = `
+
+      <div class="gift-image">
+
+        ${imageHTML}
+
+      </div>
+
+      <div class="gift-info">
+
+        <div class="gift-category">
+          ${escapeHTML(gift.category)}
+        </div>
+
+        <h3 class="gift-name">
+          ${escapeHTML(gift.name)}
+        </h3>
+
+        <div class="gift-price">
+          ${escapeHTML(gift.price)}
+        </div>
+
+        <p class="gift-reason">
+          ${escapeHTML(gift.reason)}
+        </p>
+
+        <button
+          class="save-gift ${alreadySaved ? "saved" : ""}"
+        >
+          ${alreadySaved ? "Saved" : "Save this gift"}
+        </button>
+
+      </div>
+
+    `;
+
+
+    const saveButton =
+      card.querySelector(".save-gift");
+
+
+    saveButton.addEventListener(
+      "click",
+      () => {
+
+        saveGift(gift);
+
+        saveButton.textContent =
+          "Saved";
+
+        saveButton.classList.add(
+          "saved"
+        );
+
+      }
+    );
+
+
+    giftGrid.appendChild(card);
+
+  });
+
+}
